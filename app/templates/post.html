@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<article class="media content-section">
+    <img src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}"
+         class="rounded-circle article-img" alt="">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{{ url_for('account') }}">{{ post.author.username }}</a>
+            <small class="text-muted">{{ post.date_posted.strftime('%d, %B %Y')}}</small>
+            {% if post.author == current_user %}
+                <div>
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+                    <button data-toggle="modal" data-target="#deletePostModal" class="btn btn-danger btn-sm m-1">Delete
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+        <h2 class="article-title">{{ post.title }}</h2>
+        <p class="article-content">{{ post.content }}</p>
+    </div>
+</article>
+<!-- Modal -->
+<div class="modal fade" id="deletePostModal" tabindex="-1" role="dialog" aria-labelledby="deletePostModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePostModalLabel">Delete the Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
