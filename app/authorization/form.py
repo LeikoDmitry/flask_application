@@ -51,12 +51,6 @@ class UpdateAccountForm(FlaskForm):
                 raise ValidationError('That email is taken. Please choose a different one')
 
 
-class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired(), Length(min=2, max=255)])
-    content = TextAreaField('Content', validators=[DataRequired()])
-    submit = SubmitField('Post')
-
-
 class ResetPasswordForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Get New Password')
@@ -71,19 +65,4 @@ class PasswordForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
