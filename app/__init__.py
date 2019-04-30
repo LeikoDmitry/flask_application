@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
+from app.error.handler import ErrorPagesHandler
 
 
 db = SQLAlchemy()
@@ -26,4 +27,7 @@ def create_app(config_class):
     app.register_blueprint(blueprint=authorization)
     app.register_blueprint(blueprint=post)
     app.register_blueprint(blueprint=main)
+    app.register_error_handler(403, ErrorPagesHandler.page_forbidden)
+    app.register_error_handler(404, ErrorPagesHandler.page_not_found)
+    app.register_error_handler(500, ErrorPagesHandler.internal_server_error)
     return app
