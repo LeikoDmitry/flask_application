@@ -15,7 +15,7 @@ class CreatePost(views.View):
             db.session.add(post)
             db.session.commit()
             flash('Your post has been created!', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('main.index'))
         return render_template('create_post.html', title='New post', form=form, legend='Create Post')
 
 
@@ -42,7 +42,7 @@ class PostUpdate(views.View):
             db.session.add(post)
             db.session.commit()
             flash('Your post has been updated!', 'success')
-            return redirect(url_for('post', post_id=post.id))
+            return redirect(url_for('post.post', post_id=post.id))
         elif request.method == 'GET':
             form.title.data = post.title
             form.content.data = post.content
@@ -60,7 +60,7 @@ class PostDelete(views.View):
         db.session.delete(post)
         db.session.commit()
         flash('Your post has been deleted!', 'info')
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
 
 class UserPost(views.View):

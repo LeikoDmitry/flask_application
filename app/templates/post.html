@@ -5,11 +5,11 @@
          class="rounded-circle article-img" alt="">
     <div class="media-body">
         <div class="article-metadata">
-            <a class="mr-2" href="{{ url_for('account') }}">{{ post.author.username }}</a>
+            <a class="mr-2" href="{{ url_for('authorization.account') }}">{{ post.author.username }}</a>
             <small class="text-muted">{{ post.date_posted.strftime('%d, %B %Y')}}</small>
             {% if post.author == current_user %}
                 <div>
-                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('update_post', post_id=post.id) }}">Update</a>
+                    <a class="btn btn-secondary btn-sm m-1" href="{{ url_for('post.update_post', post_id=post.id) }}">Update</a>
                     <button data-toggle="modal" data-target="#deletePostModal" class="btn btn-danger btn-sm m-1">Delete
                     </button>
                 </div>
@@ -35,7 +35,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}">
+                <form method="post" action="{{ url_for('post.delete_post', post_id=post.id) }}">
                     <button class="btn btn-danger">Delete</button>
                 </form>
             </div>

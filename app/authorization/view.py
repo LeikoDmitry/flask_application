@@ -20,7 +20,7 @@ class Login(views.View):
             user = User.query.filter_by(email=form.email.data).first()
             if user and bcrypt.check_password_hash(pw_hash=user.password, password=form.password.data):
                 login_user(user=user, remember=form.remember.data)
-                return redirect(url_for('index'))
+                return redirect(url_for('main.index'))
             flash('Login Unsuccessful. Please check email or password', 'danger')
         return render_template('login.html', form=form)
 
@@ -38,7 +38,7 @@ class Register(views.View):
             db.session.add(user)
             db.session.commit()
             flash(f'Account created for {form.username.data}', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('authorization.login'))
         return render_template('register.html', form=form, title='Register')
 
 
@@ -47,7 +47,7 @@ class Logout(views.View):
 
     def dispatch_request(self):
         logout_user()
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
 
 
 class Account(views.View):
@@ -63,7 +63,7 @@ class Account(views.View):
             current_user.email = form.email.data
             db.session.commit()
             flash(f'Account Updated for {form.username.data}', 'success')
-            return redirect(url_for('account'))
+            return redirect(url_for('authorization.account'))
         elif request.method == 'GET':
             form.username.data = current_user.username
             form.email.data = current_user.email
@@ -93,7 +93,7 @@ class ResetRequest(views.View):
             user = User.query.filter_by(email=form.email.data).first()
             self.send_email(user=user)
             flash('An email has been sent with instructions to reset your password.', 'info')
-            return redirect(url_for('login'))
+            return redirect(url_for('authorization.login'))
         return render_template('reset_request.html', title='Reset Password', form=form)
 
     def send_email(self, user: User):
@@ -102,7 +102,7 @@ class ResetRequest(views.View):
                       sender='noreply@flask.com',
                       recipients=[user.email])
         msg.html = f'''To reset your password, visit the following link:<br/>
-        <a href='{url_for('reset_token', token=token, _external=True)}'>Reset Token</a><br/>
+        <a href='{url_for('authorization.reset_token', token=token, _external=True)}'>Reset Token</a><br/>
         If you did not make this request then simply ignore this email and no changes will be made.
         '''
         mail.send(msg)
@@ -118,12 +118,12 @@ class ResetToken(views.View):
         user = User.verify_reset_token(token)
         if user is None:
             flash('That is an invalid or expired token', 'warning')
-            return redirect(url_for('reset_request'))
+            return redirect(url_for('authorization.reset_request'))
         form = PasswordForm()
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
             user.password = hashed_password
             db.session.commit()
             flash('Your password has been updated! You are now able to log in', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('authorization.login'))
         return render_template('reset_token.html', title='Reset Password', form=form)
